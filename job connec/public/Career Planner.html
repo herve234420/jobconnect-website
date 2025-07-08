@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Career Planner | JobConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #e0f2fe;
+      margin: 0; padding: 2rem;
+      color: #0369a1;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .planner {
+      max-width: 720px;
+      width: 100%;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgb(3 105 161 / 0.3);
+      padding: 2rem 2.5rem;
+    }
+    h1 {
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    .steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      user-select: none;
+    }
+    .step {
+      flex: 1;
+      text-align: center;
+      padding: 0.5rem 0;
+      font-weight: 600;
+      border-bottom: 3px solid #bae6fd;
+      color: #7dd3fc;
+      cursor: default;
+      position: relative;
+    }
+    .step.active {
+      border-bottom-color: #0369a1;
+      color: #0369a1;
+    }
+    .step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 50%;
+      height: 3px;
+      width: 100%;
+      background: #bae6fd;
+      transform: translateX(50%) translateY(-50%);
+      z-index: -1;
+    }
+    .step.active:not(:last-child)::after {
+      background: #0369a1;
+    }
+    /* Cards container */
+    .job-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .card {
+      border: 2px solid #7dd3fc;
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.3s, background 0.3s;
+      user-select: none;
+    }
+    .card.selected {
+      border-color: #0369a1;
+      background: #bae6fd;
+    }
+    .card:hover {
+      border-color: #0c4a6e;
+    }
+    button {
+      background: #0369a1;
+      border: none;
+      color: white;
+      padding: 0.7rem 1.4rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 1rem;
+      display: inline-block;
+    }
+    button:disabled {
+      background: #7dd3fc;
+      cursor: not-allowed;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    label {
+      font-weight: 600;
+    }
+    input, textarea {
+      font-family: inherit;
+      font-size: 1rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      border: 2px solid #7dd3fc;
+      outline-offset: 2px;
+      transition: border-color 0.3s;
+      resize: vertical;
+      color: #0369a1;
+    }
+    input:focus, textarea:focus {
+      border-color: #0369a1;
+    }
+    .result-box {
+      background: #bae6fd;
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      white-space: pre-wrap;
+      font-family: monospace;
+      color: #0369a1;
+      margin-bottom: 1rem;
+    }
+    
+    body {
+  font-family: 'Inter', sans-serif;
+  background: url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0; padding: 2rem;
+  color: #0369a1;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+
+  </style>
+</head>
+<body>
+   
+
+  <section class="planner" aria-label="Career Planner">
+
+    <h1>Career Planner</h1>
+
+    <nav class="steps" aria-label="Progress">
+      <div class="step active" id="step-indicator-1" aria-current="step">1. Choose Career</div>
+      <div class="step" id="step-indicator-2">2. Current Job</div>
+      <div class="step" id="step-indicator-3">3. Your Skills</div>
+      <div class="step" id="step-indicator-4">4. Result</div>
+    </nav>
+
+    <!-- Step 1: Choose Career -->
+    <section id="step-1" class="step-section" role="tabpanel" aria-labelledby="step-indicator-1">
+      <p>Select your target career:</p>
+      <div class="job-cards" role="list" tabindex="0" aria-label="Select a career">
+        <div tabindex="0" role="listitem" class="card" data-job="Frontend Developer">Frontend Developer</div>
+        <div tabindex="0" role="listitem" class="card" data-job="Data Scientist">Data Scientist</div>
+        <div tabindex="0" role="listitem" class="card" data-job="Project Manager">Project Manager</div>
+        <div tabindex="0" role="listitem" class="card" data-job="Marketing Specialist">Marketing Specialist</div>
+        <div tabindex="0" role="listitem" class="card" data-job="Graphic Designer">Graphic Designer</div>
+        <div tabindex="0" role="listitem" class="card" data-job="Financial Analyst">Financial Analyst</div>
+      </div>
+      <button id="next-step-1" disabled>Next</button>
+    </section>
+
+    <!-- Step 2: Current Job -->
+    <section id="step-2" class="step-section" role="tabpanel" aria-labelledby="step-indicator-2" hidden>
+      <form id="current-job-form">
+        <label for="current-job-input">What is your current job title?</label>
+        <input type="text" id="current-job-input" name="currentJob" placeholder="e.g. Junior Developer" required />
+        <button type="submit">Next</button>
+      </form>
+    </section>
+
+    <!-- Step 3: Skills -->
+    <section id="step-3" class="step-section" role="tabpanel" aria-labelledby="step-indicator-3" hidden>
+      <form id="skills-form">
+        <label for="skills-input">List your skills (comma separated):</label>
+        <textarea id="skills-input" name="skills" placeholder="e.g. HTML, CSS, JavaScript" rows="3" required></textarea>
+        <button type="submit">Get Career Plan</button>
+      </form>
+    </section>
+
+    <!-- Step 4: Result -->
+    <section id="step-4" class="step-section" role="tabpanel" aria-labelledby="step-indicator-4" hidden>
+      <div class="result-box" id="result" tabindex="0"></div>
+      <button id="restart">Start Over</button>
+    </section>
+
+  </section>
+
+  <script>
+    const cards = document.querySelectorAll('.job-cards .card');
+    const nextBtnStep1 = document.getElementById('next-step-1');
+    const stepSections = document.querySelectorAll('.step-section');
+    const stepIndicators = document.querySelectorAll('.step');
+    const currentJobForm = document.getElementById('current-job-form');
+    const skillsForm = document.getElementById('skills-form');
+    const resultBox = document.getElementById('result');
+    const restartBtn = document.getElementById('restart');
+    let selectedJob = null;
+    let currentJobTitle = '';
+
+    // Predefined skills for each job for fit calculation
+    const jobSkills = {
+  "Frontend Developer": [
+    "html", "css", "javascript", "typescript", "react", "next.js", "tailwind", "bootstrap", "responsive design",
+    "ui", "ux", "git", "npm", "webpack", "vite", "rest api", "version control"
+  ],
+  "Data Scientist": [
+    "python", "r", "sql", "machine learning", "deep learning", "pandas", "numpy", "scikit-learn", "tensorflow",
+    "data visualization", "statistics", "matplotlib", "seaborn", "data cleaning", "big data", "hadoop", "spark"
+  ],
+  "Project Manager": [
+    "communication", "leadership", "project planning", "agile", "scrum", "kanban", "jira", "risk management",
+    "stakeholder management", "time management", "budgeting", "conflict resolution", "presentation skills"
+  ],
+  "Marketing Specialist": [
+    "seo", "sem", "content creation", "google analytics", "facebook ads", "email marketing", "branding", 
+    "market research", "copywriting", "social media", "ad campaigns", "crm", "influencer marketing", "a/b testing"
+  ],
+  "Graphic Designer": [
+    "photoshop", "illustrator", "indesign", "creativity", "visual design", "adobe xd", "figma", "canva",
+    "typography", "branding", "color theory", "composition", "storyboarding", "layout design", "sketch"
+  ],
+  "Financial Analyst": [
+    "excel", "financial modeling", "accounting", "budgeting", "forecasting", "variance analysis", 
+    "power bi", "tableau", "sql", "gaap", "kpis", "cash flow", "investment analysis", "reporting", "erp systems"
+  ]
+};
+
+
+    // Show only the given step, hide others
+    function showStep(stepNum) {
+      stepSections.forEach((section, i) => {
+        if (i === stepNum - 1) {
+          section.hidden = false;
+          section.querySelector('input, textarea, button, .card')?.focus();
+          stepIndicators[i].classList.add('active');
+          stepIndicators[i].setAttribute('aria-current', 'step');
+        } else {
+          section.hidden = true;
+          stepIndicators[i].classList.remove('active');
+          stepIndicators[i].removeAttribute('aria-current');
+        }
+      });
+    }
+
+    // Step 1: Select job card
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        cards.forEach(c => {
+          c.classList.remove('selected');
+          c.setAttribute('aria-selected', 'false');
+        });
+        card.classList.add('selected');
+        card.setAttribute('aria-selected', 'true');
+        selectedJob = card.getAttribute('data-job');
+        nextBtnStep1.disabled = false;
+        nextBtnStep1.focus();
+      });
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      });
+    });
+
+    nextBtnStep1.addEventListener('click', () => {
+      if (!selectedJob) return;
+      showStep(2);
+      document.getElementById('current-job-input').focus();
+    });
+
+    // Step 2: Current Job form
+    currentJobForm.addEventListener('submit', e => {
+      e.preventDefault();
+      currentJobTitle = currentJobForm.currentJob.value.trim();
+      if (!currentJobTitle) {
+        alert('Please enter your current job title.');
+        return;
+      }
+      showStep(3);
+      document.getElementById('skills-input').focus();
+    });
+
+    // Step 3: Skills form and calculate job fit
+    skillsForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const skillsInput = skillsForm.skills.value.trim();
+      if (!skillsInput) {
+        alert('Please enter your skills.');
+        return;
+      }
+      const userSkills = skillsInput.toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
+      const requiredSkills = jobSkills[selectedJob] || [];
+
+      // Calculate job fit percentage
+      const matchedSkills = userSkills.filter(skill => requiredSkills.includes(skill));
+      const fitPercent = requiredSkills.length ? Math.round((matchedSkills.length / requiredSkills.length) * 100) : 0;
+
+      // Generate career plan message with job fit
+      let fitMessage = '';
+      if (fitPercent >= 80) {
+        fitMessage = "Great fit! You're well-prepared for this career.";
+      } else if (fitPercent >= 50) {
+        fitMessage = "Good fit. Consider improving some skills to boost your chances.";
+      } else {
+        fitMessage = "You may need to develop more skills to match this career well.";
+      }
+
+      const careerPlan = `
+Target Career: ${selectedJob}
+Current Job: ${currentJobTitle}
+Your Skills: ${userSkills.join(', ')}
+
+Job Fit Score: ${fitPercent}%
+
+${fitMessage}
+
+Suggested Next Steps:
+- Enhance skills relevant to ${selectedJob}.
+- Take courses and certifications.
+- Work on projects to build experience.
+- Network with professionals in the field.
+- Tailor your resume to highlight your strengths.
+      `.trim();
+
+      resultBox.textContent = careerPlan;
+      showStep(4);
+      resultBox.focus();
+    });
+
+    // Restart
+    restartBtn.addEventListener('click', () => {
+      selectedJob = null;
+      currentJobTitle = '';
+      nextBtnStep1.disabled = true;
+      cards.forEach(c => {
+        c.classList.remove('selected');
+        c.setAttribute('aria-selected', 'false');
+      });
+      currentJobForm.reset();
+      skillsForm.reset();
+      resultBox.textContent = '';
+      showStep(1);
+      nextBtnStep1.focus();
+    });
+
+    // Initialize first step view
+    showStep(1);
+  </script>
+</body>
+</html>

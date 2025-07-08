@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Employee Dashboard | JobConnect</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f0fdf4; /* very light green */
+      color: #14532d; /* dark green */
+      transition: background-color 0.3s, color 0.3s;
+    }
+    /* Dark mode */
+    html.dark body {
+      background-color: #072f14;
+      color: #a7f3d0;
+    }
+    nav {
+      background-color: #047857; /* green-600 */
+      color: #d1fae5; /* green-100 */
+      box-shadow: 0 2px 8px rgb(4 120 87 / 0.3);
+    }
+    nav a {
+      color: #d1fae5;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #a7f3d0;
+      text-decoration: underline;
+    }
+    aside {
+      background-color: #ffffffcc; /* white with slight transparency */
+      color: #065f46; /* green-800 */
+    }
+    html.dark aside {
+      background-color: #064e3bcc; /* dark green with transparency */
+      color: #bbf7d0; /* light green */
+    }
+    aside a {
+      transition: color 0.3s;
+    }
+    aside a:hover {
+      color: #059669; /* green-500 */
+    }
+    main {
+      background-color: #ffffffcc;
+      border-radius: 0.75rem;
+      box-shadow: 0 6px 20px rgb(4 120 87 / 0.15);
+      padding: 1.5rem;
+      min-height: 100vh;
+    }
+    html.dark main {
+      background-color: #065f4677;
+      box-shadow: 0 6px 20px rgb(8 107 79 / 0.3);
+    }
+    .job-card {
+      background: #dcfce7; /* green-100 */
+      border-radius: 0.75rem;
+      box-shadow: 0 3px 6px rgb(4 120 87 / 0.15);
+      padding: 1.25rem;
+      transition: box-shadow 0.3s, transform 0.3s;
+      color: #14532d;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    html.dark .job-card {
+      background: #064e3b; /* green-900 */
+      color: #bbf7d0;
+      box-shadow: 0 3px 6px rgb(8 107 79 / 0.4);
+    }
+    .job-card:hover {
+      box-shadow: 0 10px 25px rgb(4 120 87 / 0.4);
+      transform: translateY(-6px);
+    }
+    .btn-green {
+      background-color: #059669;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: background-color 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-green:hover {
+      background-color: #047857;
+    }
+    .toggle-save-btn {
+      font-size: 1.5rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: #065f46;
+      transition: color 0.3s;
+      align-self: flex-end;
+    }
+    .toggle-save-btn.saved {
+      color: #059669;
+    }
+    .toggle-save-btn:hover {
+      color: #047857;
+    }
+    input,
+    select {
+      border-radius: 0.5rem;
+      border: 2px solid #a7f3d0;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #065f46;
+      outline-offset: 2px;
+      transition: border-color 0.3s;
+      background-color: #dcfce7;
+    }
+    input:focus,
+    select:focus {
+      border-color: #059669;
+      background-color: #bbf7d0;
+      color: #065f46;
+    }
+    html.dark input,
+    html.dark select {
+      background-color: #064e3b;
+      color: #bbf7d0;
+      border-color: #bbf7d0;
+    }
+    html.dark input:focus,
+    html.dark select:focus {
+      background-color: #22c55e;
+      color: #064e3b;
+      border-color: #22c55e;
+    }
+    .header-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    /* New styles for banner images */
+    .job-card img.banner-image {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <nav class="px-8 py-4 flex justify-between items-center sticky top-0 z-50">
+    <h1 class="text-3xl font-extrabold tracking-wide select-none">JobConnect</h1>
+    <div class="flex items-center gap-6">
+      <button aria-label="Toggle Dark Mode" onclick="toggleDarkMode()" class="text-2xl select-none hover:text-green-200 transition">
+        🌓
+      </button>
+      <span class="text-lg font-semibold select-none">Welcome, <span class="underline"></span></span>
+      <a href="login.html" class="font-semibold hover:underline select-none">Logout</a>
+    </div>
+  </nav>
+
+  <div class="flex flex-col lg:flex-row min-h-screen px-8 py-6 gap-8">
+    <aside class="w-full lg:w-64 p-6">
+      <h2 class="text-xl font-semibold mb-8">Navigation</h2>
+      <ul class="space-y-6 text-lg font-medium">
+        <li><a href="#" class="text-green-700 hover:text-green-900 transition">🏠 Dashboard</a></li>
+        <li><a href="#" class="hover:text-green-700 transition">📁 My Applications</a></li>
+        <li><a href="resume.html" class="hover:text-green-700 transition">📄 Resume Upload</a></li>
+        <li><a href="Career Planner.html" class="hover:text-green-700 transition">🧠 Career Planner</a></li>
+        <li><a href="settings.html" class="hover:text-green-700 transition">⚙️ Settings</a></li>
+      </ul>
+    </aside>
+
+    <main class="flex-1 bg-white rounded-xl p-8 shadow-lg">
+      <div class="header-section">
+        <h2 class="text-3xl font-extrabold tracking-wide text-green-700">Recommended Jobs</h2>
+        <div class="flex gap-4 flex-wrap">
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Search jobs..."
+            class="border border-green-300 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none px-4 py-2 rounded-md text-green-700 font-medium"
+          />
+          <select
+            id="categorySelect"
+            class="border border-green-300 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none px-4 py-2 rounded-md text-green-700 font-medium"
+          >
+            <option value="">All Categories</option>
+            <option value="Tech">Tech</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Finance">Finance</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="jobList" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+    </main>
+  </div>
+
+<script>
+  const jobs = [
+    {
+      title: "Frontend Developer",
+      company: "WebWorks",
+      location: "Remote",
+      category: "Tech",
+      description: "Build websites using React and Tailwind.",
+      banner: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80",
+    },
+    {
+      title: "Marketing Coordinator",
+      company: "BrandBoost",
+      location: "New York",
+      category: "Marketing",
+      description: "Coordinate and manage campaigns.",
+      banner: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=600&q=80",
+    },
+    {
+      title: "Finance Analyst",
+      company: "FinEdge",
+      location: "Chicago",
+      category: "Finance",
+      description: "Analyze budgets and financial plans.",
+      banner: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80",
+    },
+    {
+      title: "UX Designer",
+      company: "DesignPro",
+      location: "San Francisco",
+      category: "Tech",
+      description: "Design user interfaces and experiences.",
+      banner: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80",
+    },
+    {
+      title: "Social Media Manager",
+      company: "Marketify",
+      location: "Remote",
+      category: "Marketing",
+      description: "Manage social media channels and engagement.",
+      banner: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80",
+    },
+    {
+      title: "Financial Advisor",
+      company: "WealthWise",
+      location: "Boston",
+      category: "Finance",
+      description: "Advise clients on financial planning.",
+      banner: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80",
+    }
+  ];
+
+  const jobList = document.getElementById("jobList");
+  const searchInput = document.getElementById("searchInput");
+  const categorySelect = document.getElementById("categorySelect");
+
+  function renderJobs() {
+    const keyword = searchInput.value.toLowerCase();
+    const selectedCategory = categorySelect.value;
+
+    const filteredJobs = jobs.filter(job => {
+      const matchKeyword =
+        job.title.toLowerCase().includes(keyword) ||
+        job.company.toLowerCase().includes(keyword);
+      const matchCategory = !selectedCategory || job.category === selectedCategory;
+      return matchKeyword && matchCategory;
+    });
+
+    jobList.innerHTML = "";
+
+    filteredJobs.forEach(job => {
+      const isSaved = localStorage.getItem(job.title);
+      const card = document.createElement("div");
+      card.className = "job-card";
+
+      card.innerHTML = `
+        <div class="job-header">
+          <div>
+            <h3 class="text-xl font-semibold">${job.title}</h3>
+            <p class="mb-1 font-semibold">${job.company} • <span class="font-normal">${job.location}</span></p>
+          </div>
+          <button
+            aria-label="Save job"
+            onclick="toggleSave('${job.title}')"
+            class="toggle-save-btn ${isSaved ? "saved" : ""}"
+            title="${isSaved ? "Unsave Job" : "Save Job"}"
+          >
+            ${isSaved ? "💾" : "🔖"}
+          </button>
+        </div>
+        <img src="${job.banner}" alt="${job.title} banner" class="banner-image" />
+        <p class="mb-4 text-green-800">${job.description}</p>
+        <button onclick="applyToJob('${job.title}', '${job.company}')" class="btn-green w-full">Apply Now</button>
+      `;
+
+      jobList.appendChild(card);
+    });
+  }
+
+  // ✅ Simplified apply function (no backend)
+  function applyToJob(title, company) {
+    const userEmail = prompt("Enter your email to apply:");
+    if (!userEmail) {
+      alert("❌ Email is required.");
+      return;
+    }
+    alert(`✅ Application accepted for "${title}" at "${company}"!`);
+  }
+
+  function toggleSave(title) {
+    if (localStorage.getItem(title)) {
+      localStorage.removeItem(title);
+    } else {
+      localStorage.setItem(title, true);
+    }
+    renderJobs();
+  }
+
+  function toggleDarkMode() {
+    document.documentElement.classList.toggle("dark");
+  }
+
+  searchInput.addEventListener("input", renderJobs);
+  categorySelect.addEventListener("change", renderJobs);
+
+  renderJobs();
+</script>
+</body>
+</html>
